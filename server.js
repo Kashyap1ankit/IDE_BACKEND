@@ -1,22 +1,34 @@
-const express = require("express");
+import express from "express";
+import { config as dotenvConfig } from "dotenv";
+import { connectToMongo } from "./db.js";
 const app = express();
-const path = require("path");
-const { NodeVM } = require("vm2");
+import cors from "cors";
+import { NodeVM }  from "vm2";
+dotenvConfig();
+// conncted to db
+const db = connectToMongo();
 
-//View Folder - ejs
+const port = 6969;
+app.use(express.json());
+app.use(
+  cors({
+    // origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
+    origin: [process.env.CLIENT_URL],
+    methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"],
+    credentials: true,
+  })
+);
 
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
 
-const port = 3030;
-
+//testing
 app.get("/", (req, res) => {
-  res.render("index.ejs");
+  res.json({ massage: "Welcome to the IDE Project Api Server!!" });
 });
+
 
 app.get("/run", (req, res) => {});
 const vm = new NodeVM({
-  console: "inherit",
+  console: "redirect",
   sandbox: {},
   require: {
     external: true,
@@ -26,6 +38,6 @@ const vm = new NodeVM({
 const code = `console.log("hi")`;
 
 vm.run(code);
-app.listen(port, (req, res) => {
-  console.log("listening");
+app.listen(port, () => {
+  console.log(`IDE app listening on port http://localhost:${port}`);
 });
