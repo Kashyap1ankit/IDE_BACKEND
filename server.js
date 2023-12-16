@@ -1,43 +1,45 @@
 import express from "express";
 import { config as dotenvConfig } from "dotenv";
 import { connectToMongo } from "./db.js";
-const app = express();
 import cors from "cors";
-import { NodeVM }  from "vm2";
-dotenvConfig();
-// conncted to db
-const db = connectToMongo();
+import runCode from "./Code/code.js";
 
+dotenvConfig();
+
+// Connected to the database
+const db = connectToMongo();
+const app = express();
 const port = 6969;
+
 app.use(express.json());
+
 app.use(
   cors({
-    // origin: [process.env.CLIENT_URL_1, process.env.CLIENT_URL_2],
-    origin: [process.env.CLIENT_URL],
-    methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH"],
+    origin: "*", // Allow all origins during development
+    methods: ["GET", "POST", "UPDATE", "DELETE", "PUT", "PATCH", "OPTIONS"],
     credentials: true,
   })
 );
 
-
-//testing
+// Testing endpoint
 app.get("/", (req, res) => {
-  res.json({ massage: "Welcome to the IDE Project Api Server!!" });
+  res.json({ message: "Welcome to the IDE Project API Server!" });
 });
 
+// Endpoint for running code
+app.post("/run", async (req, res) => {
+  const { code } = req.body;
 
-app.get("/run", (req, res) => {});
-const vm = new NodeVM({
-  console: "redirect",
-  sandbox: {},
-  require: {
-    external: true,
-  },
+  try {
+    const output = await runCode(code);
+    res.json({ success: true, output });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: error.toString() });
+  }
 });
 
-const code = `console.log("hi")`;
-
-vm.run(code);
 app.listen(port, () => {
   console.log(`IDE app listening on port http://localhost:${port}`);
 });
+  
