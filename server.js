@@ -30,16 +30,21 @@ app.get("/", (req, res) => {
 app.post("/run", async (req, res) => {
   const { code } = req.body;
 
+  console.log("Received code:", code); // Log the received code
+
   try {
-    const output = await runCode(code);
-    res.json({ success: true, output });
+    const { result, consoleOutput } = await runCode(code);
+
+    console.log("Code result:", result);
+    console.log("Console Output:", consoleOutput);
+
+    res.json({ success: true, result, consoleOutput });
   } catch (error) {
-    console.error(error);
+    console.error("Error:", error);
     res.status(500).json({ success: false, error: error.toString() });
-  }
+  } 
 });
 
 app.listen(port, () => {
   console.log(`IDE app listening on port http://localhost:${port}`);
 });
-  
