@@ -22,9 +22,9 @@
       
                   if (error) {
                     console.error('Python Execution Error:', error);
-                    resolve({ output: error.message ? error.message.trim() : '' });
+                    resolve({ consoleOutput: error.message ? error.message.trim() : '' });
                   } else {
-                    resolve({ output: stdout.trim() });
+                    resolve({ consoleOutput: stdout.trim() });
                   }
                 });
              

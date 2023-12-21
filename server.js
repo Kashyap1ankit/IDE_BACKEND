@@ -29,7 +29,7 @@
   });
 
   // Endpoint for running code
-  app.post("/run", async (req, res) => {
+  app.post("/run-javascript", async (req, res) => {
     const { code } = req.body;
 
     console.log("Received code:", code); // Log the received code
@@ -69,11 +69,11 @@
     console.log("Received Python code:", code);
   
     try {
-      const pythonResult = await runPythonCode(code);
+      const pythonresult = await runPythonCode(code);
+      console.log(pythonresult);
+      console.log("Python Code Result:", pythonresult);
   
-      console.log("Python Code Result:", pythonResult);
-  
-      res.json({ success: true, pythonResult });
+      res.json({ success: true, consoleOutput: pythonresult["consoleOutput"] });
     } catch (error) {
       console.error("Error running Python code:", error);
   
