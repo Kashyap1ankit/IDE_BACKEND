@@ -5,6 +5,7 @@
   import runCode from "./Codes/jsCode.js";
   import compileAndRunCCode from "./Codes/cCode.js";
   import runPythonCode from "./Codes/pyCode.js";
+import compileAndRunCPPCode from "./Codes/c++code.js";
 
   dotenvConfig();
 
@@ -52,11 +53,11 @@
     console.log("Received C code:", code); 
 
     try {
-      const cResult = await compileAndRunCCode(code);
+      const consoleOutput = await compileAndRunCCode(code);
 
-      console.log("C Code Result:", cResult);
+      console.log("C Code Result:", consoleOutput);
 
-      res.json({ success: true, cResult });
+      res.json({ success: true, consoleOutput });
     } catch (error) {
       console.error("Error compiling and running C code:", error);
       res.status(500).json({ success: false, error: error.toString() });
@@ -82,6 +83,22 @@
     }
   });
   
+  app.post("/run-cpp", async (req, res) => {
+    const { code } = req.body;
+  
+    console.log("Received C++ code:", code);
+  
+    try {
+      const consoleOutput = await compileAndRunCPPCode(code);
+  
+      console.log("C++ Code Result:", consoleOutput);
+  
+      res.json({ success: true, consoleOutput });
+    } catch (error) {
+      console.error("Error compiling and running C++ code:", error);
+      res.status(500).json({ success: false, error: error.toString() });
+    }
+  });
 
   app.listen(port, () => {
     console.log(`IDE app listening on port http://localhost:${port}`);
