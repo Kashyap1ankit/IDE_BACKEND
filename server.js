@@ -6,6 +6,7 @@
   import compileAndRunCCode from "./Codes/cCode.js";
   import runPythonCode from "./Codes/pyCode.js";
 import compileAndRunCPPCode from "./Codes/c++code.js";
+import compileAndRunJavaCode from "./Codes/javaCode.js";
 
   dotenvConfig();
 
@@ -99,6 +100,25 @@ import compileAndRunCPPCode from "./Codes/c++code.js";
       res.status(500).json({ success: false, error: error.toString() });
     }
   });
+  app.post('/run-java', async (req, res) => {
+    const { code } = req.body;
+  
+    console.log('Received Java code:', code); // Log the received code
+  
+    try {
+      const consoleOutput = await compileAndRunJavaCode(code);
+  
+      console.log('Java Code Result:', consoleOutput);
+  
+      res.json({ success: true, consoleOutput });
+    } catch (error) {
+      console.error('Error running Java code:', error);
+  
+      // Use error.message or JSON.stringify(error) for a more informative error response
+      res.status(500).json({ success: false, error: error.message || JSON.stringify(error) });
+    }
+  });
+  
 
   app.listen(port, () => {
     console.log(`IDE app listening on port http://localhost:${port}`);
